@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "zhangsan",
+    "password": "zhangsan",
+    "version": 0,
+    "roles": "role3",
+    "permissions": "product,order:view,stock:view"
+  },
+  {
+    "id": 2,
+    "name": "lisi",
+    "password": "lisi",
+    "version": 1,
+    "roles": "role4",
+    "permissions": "product:view,order,stock:view"
+  },
+  {
+    "id": 3,
+    "name": "wangwu",
+    "password": "wangwu",
+    "version": 2,
+    "roles": "role5",
+    "permissions": "product:view,order:view,stock"
+  }
+]

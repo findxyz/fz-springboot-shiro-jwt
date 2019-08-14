@@ -1,0 +1,45 @@
+@startuml
+
+User -> Tomcat: 发起/doLogin请求
+activate Tomcat
+
+Tomcat -> ApplicationFilterChain: 进入tomcat的filterChain
+activate ApplicationFilterChain
+
+ApplicationFilterChain -> SpringShiroFilter:
+activate SpringShiroFilter
+
+SpringShiroFilter -> AbstractShiroFilter:
+activate AbstractShiroFilter
+
+AbstractShiroFilter -> AnonFilter: 根据request生成shiro的subject，根据shiro的配置解析出/doLogin对应的filter
+activate AnonFilter
+
+AnonFilter -> LoginController: anonFilter直接通过
+activate LoginController
+
+LoginController -> doLogin: 对用户的登陆信息进行认证，认证成功后返回token
+activate doLogin
+
+doLogin -> LoginController: 返回认证后的token
+deactivate doLogin
+
+LoginController -> AnonFilter
+deactivate LoginController
+
+AnonFilter -> AbstractShiroFilter
+deactivate AnonFilter
+
+AbstractShiroFilter -> SpringShiroFilter
+deactivate AbstractShiroFilter
+
+SpringShiroFilter -> ApplicationFilterChain
+deactivate SpringShiroFilter
+
+ApplicationFilterChain -> Tomcat
+deactivate ApplicationFilterChain
+
+Tomcat -> User: 返回认证后的token
+deactivate Tomcat
+
+@enduml

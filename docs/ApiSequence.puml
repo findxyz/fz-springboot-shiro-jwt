@@ -1,0 +1,51 @@
+@startuml
+
+User -> Tomcat: 发起/api/xxx请求
+activate Tomcat
+
+Tomcat -> ApplicationFilterChain: 进入tomcat的filterChain
+activate ApplicationFilterChain
+
+ApplicationFilterChain -> SpringShiroFilter: 进入到shiro的filter
+activate SpringShiroFilter
+
+SpringShiroFilter -> AbstractShiroFilter:
+activate AbstractShiroFilter
+
+AbstractShiroFilter -> JwtFilter: 根据request生成shiro的subject（以供后续使用），根据shiro的配置找到/api/xxx对应的filter
+activate JwtFilter
+
+JwtFilter -> ApiController: jwtFilter校验jwt并对校验通过的执行subject.login
+activate ApiController
+
+ApiController -> apiMethod: 如有RequirePermissions等注解，将会执行相应handle处理，对subject中的权限进行校验
+activate apiMethod
+
+apiMethod -> PermissionsHandle: 对subject权限进行校验
+activate PermissionsHandle
+
+PermissionsHandle -> apiMethod: 校验通过（若校验失败则会抛出没有相关权限的异常）
+deactivate PermissionsHandle
+
+apiMethod -> ApiController: 执行业务逻辑，返回数据
+deactivate apiMethod
+
+ApiController -> JwtFilter
+deactivate ApiController
+
+JwtFilter -> AbstractShiroFilter
+deactivate JwtFilter
+
+AbstractShiroFilter -> SpringShiroFilter
+deactivate AbstractShiroFilter
+
+SpringShiroFilter -> ApplicationFilterChain
+deactivate SpringShiroFilter
+
+ApplicationFilterChain -> Tomcat
+deactivate ApplicationFilterChain
+
+Tomcat -> User: 返回数据
+deactivate Tomcat
+
+@enduml
